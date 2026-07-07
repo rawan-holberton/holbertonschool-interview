@@ -1,26 +1,18 @@
 #!/usr/bin/python3
-"""
-Log parsing script.
-"""
-
 import sys
 
 
 def print_stats(total_size, status_codes):
-    """
-    Print accumulated statistics.
-    """
+    """Print statistics."""
     print("File size: {}".format(total_size))
-
-    for code in sorted(status_codes.keys()):
-        if status_codes[code] > 0:
+    for code in sorted(status_codes):
+        if status_codes[code] != 0:
             print("{}: {}".format(code, status_codes[code]))
 
 
-if __name__ == "__main__":
+def process_logs():
+    """Process log lines from stdin."""
     total_size = 0
-    line_count = 0
-
     status_codes = {
         200: 0,
         301: 0,
@@ -32,29 +24,39 @@ if __name__ == "__main__":
         500: 0
     }
 
+    count = 0
+
     try:
         for line in sys.stdin:
-            line_count += 1
+            parts = line.split()
+
+            if len(parts) < 7:
+                continue
 
             try:
-                parts = line.split()
+                status = int(parts[-2])
+                size = int(parts[-1])
+            except ValueError:
+                continue
 
-                status_code = int(parts[-2])
-                file_size = int(parts[-1])
+            total_size += size
 
-                total_size += file_size
+            if status in status_codes:
+                status_codes[status] += 1
 
-                if status_code in status_codes:
-                    status_codes[status_code] += 1
+            count += 1
 
-            except (IndexError, ValueError):
-                pass
-
-            if line_count % 10 == 0:
+            if count == 10:
                 print_stats(total_size, status_codes)
+                count = 0
 
     except KeyboardInterrupt:
         print_stats(total_size, status_codes)
-        raise
+        return
 
-    print_stats(total_size, status_codes)
+    if count != 0:
+        print_stats(total_size, status_codes)
+
+
+if __name__ == "__main__":
+    process_logs()
