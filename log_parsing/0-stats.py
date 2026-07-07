@@ -56,8 +56,7 @@ def process_logs():
         print_stats(total_size, status_codes)
         return
 
-    if count != 0:
-        print_stats(total_size, status_codes)
+    print_stats(total_size, status_codes)
 
 
 if __name__ == "__main__":
