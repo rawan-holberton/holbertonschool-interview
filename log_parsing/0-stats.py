@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""Log parsing script that computes metrics from web server logs."""
+
 import sys
 
 
