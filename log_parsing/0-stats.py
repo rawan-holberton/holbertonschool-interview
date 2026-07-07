@@ -32,6 +32,9 @@ def process_logs():
         for line in sys.stdin:
             parts = line.split()
 
+            if len(parts) < 2:
+                continue
+
             try:
                 status = int(parts[-2])
                 size = int(parts[-1])
