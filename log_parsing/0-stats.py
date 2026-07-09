@@ -42,11 +42,10 @@ def process_logs():
 
             total_size += size
 
-            try: 
-                 status = int(parts[-2])
-
-                 if status in status_codes:
-                     status_codes[status] += 1
+            try:
+                status = int(parts[-2])
+                if status in status_codes:
+                    status_codes[status] += 1
             except ValueError:
                 pass
 
